@@ -1,13 +1,11 @@
 class Box
   attr_reader :contents
 
-  ROOT = Box.new()
-  def initialize(parent)
-    @parent.parent
+  def initialize
+    @contents = []
   end
 
-  def item(item)
-    puts "adding item #{item}"
+  def add_item(item)
     @contents << item
   end
 
@@ -15,11 +13,9 @@ class Box
     @contents.inject(0.0) { |total, item| total + item.weight }
   end
 
-  # recursivly prints a box's complete contents
-  def full_inventory
-  
+  def item_count
+    @contents.inject(0) { |total, item| total + item.item_count }
   end
-
   def to_s
     "<Box:#{object_id} #{@contents.length} item(s) weight: #{weight} >"
   end
