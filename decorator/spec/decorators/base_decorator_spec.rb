@@ -3,16 +3,12 @@ require 'rails_helper'
 RSpec.describe BaseDecorator, type: :model do
   describe '.delegate' do
     it 'allows delegation of base object methods' do
-      base = double('base')
+      base = double('base', spam: 'hello from spam')
       BaseDecorator.delegate_methods :spam
 
       decorator = BaseDecorator.new base
-      allow(base).to receive(:spam)
-      allow(decorator).to receive(:spam)
 
-      decorator.spam
-
-      expect(base).to have_received(:spam)
+      expect(decorator.spam).to eq('hello from spam')
     end
   end
 
@@ -23,5 +19,4 @@ RSpec.describe BaseDecorator, type: :model do
       expect(decorator.object).to eq(base)
     end
   end
-
 end
