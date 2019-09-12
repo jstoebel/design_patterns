@@ -1,5 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ArticleDecorator, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it 'exposes the age of the article in human readable format' do
+    decorated = article.decorate
+
+    expect(decorated.age).to eq('Published 1 day ago')
+  end
 end
