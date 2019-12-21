@@ -67,15 +67,18 @@ class Interpreter(object):
         # and return the INTEGER token
         if current_char.isdigit():
             token = Token(INTEGER, int(current_char))
-            self.pos += 1
-            return token
-
-        if current_char == '+':
+        elif current_char == '+':
             token = Token(PLUS, current_char)
+        elif current_char == ' ':
+            # spaces have no semantic meaning in this calculator.
+            # move on to the next character
             self.pos += 1
-            return token
+            return self.get_next_token()
+        else:
+            self.error()
 
-        self.error()
+        self.pos += 1
+        return token
 
     def eat(self, token_type):
         # compare the current token type with the passed token

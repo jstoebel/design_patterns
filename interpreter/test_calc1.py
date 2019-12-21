@@ -3,13 +3,15 @@ from interpreter.calc1 import Interpreter, InterpreterParseError
 
 def test_single_digit():
     # test digit plus digit
-    interpreter = Interpreter('1+2')
-    assert interpreter.expr() == 3
+    assert calc('1+2') == 3
 
 def test_multi_digits():
     # test adding multiple digits
-    interpreter = Interpreter('10+20')
-    assert interpreter.expr() == 30
+    assert calc('10+20') == 30
+
+def test_allows_white_space():
+    # test adding multiple digits
+    assert calc('10 + 20') == 30
 
 def test_syntax_error():
     # test various syntax errors that shouldn't ever work
@@ -26,3 +28,7 @@ def test_syntax_error():
         i = Interpreter(string)
         with pytest.raises(error):
             i.expr()
+
+def calc(exp):
+    interpreter = Interpreter(exp)
+    return interpreter.expr()
