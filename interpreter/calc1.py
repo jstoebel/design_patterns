@@ -26,6 +26,11 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
+    def is_integer(self):
+        return self.type == INTEGER
+
+class InterpreterParseError(Exception):
+    pass
 
 class Interpreter(object):
     def __init__(self, text):
@@ -37,7 +42,7 @@ class Interpreter(object):
         self.current_token = None
 
     def error(self):
-        raise Exception('Error parsing input')
+        raise InterpreterParseError('Error parsing input')
 
     def get_next_token(self):
         """Lexical analyzer (also known as scanner or tokenizer)
@@ -82,32 +87,38 @@ class Interpreter(object):
         else:
             self.error()
 
+    def eat_integers(self):
+        """
+        eats integers tokens until a non integer is found. 
+        Returns teh resulting integers
+        """
+        result = ''
+        while True:
+            # eat tokens until you hit a non integer. Assume its a plus!
+            curr_token = self.current_token
+            try:
+                self.eat(INTEGER)
+                result += str(curr_token.value)
+            except InterpreterParseError as e:
+                return int(''.join(result))
+
     def expr(self):
         """expr -> INTEGER PLUS INTEGER"""
         # set current token to the first token taken from the input
         self.current_token = self.get_next_token()
 
-        # we expect the current token to be a single-digit integer
-        left = self.current_token
-        self.eat(INTEGER)
+        left = self.eat_integers()
 
         # we expect the current token to be a '+' token
         op = self.current_token
         self.eat(PLUS)
 
         # we expect the current token to be a single-digit integer
-        right = self.current_token
-        self.eat(INTEGER)
+        right = self.eat_integers()
+
         # after the above call the self.current_token is set to
         # EOF token
-
-        # at this point INTEGER PLUS INTEGER sequence of tokens
-        # has been successfully found and the method can just
-        # return the result of adding two integers, thus
-        # effectively interpreting client input
-        result = left.value + right.value
-        return result
-
+        return left + right
 
 def main():
     while True:
