@@ -1,4 +1,4 @@
-The Factory Pattern provides a way for a client to instantiate different object without having to know which classes they need. The objective is to provide a simple interface that doesn't need to change when new classes are added or removed.
+The Factory Pattern provides a way for a client to instantiate different objects without having to know which they need. The objective is to provide a simple interface that doesn't need to change when new classes are added or removed.
 
 To take a trivial example, let's say I am building an app for a university. I have two classes `Student` and `Faculty` who share a common interface.
 ```ruby
@@ -31,7 +31,7 @@ class Faculty < Person
 end
 ```
 
-Let's also say that, for reasons that escape us, we don't want to make a single interface for creating instances of both classes:
+Let's also say that we want to make a single interface for creating instances of both classes:
 
 ```ruby
 class PersonFactory
