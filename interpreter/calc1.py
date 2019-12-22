@@ -2,12 +2,11 @@
 #
 # EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
-INTEGER, PLUS, EOF = 'INTEGER', 'PLUS', 'EOF'
+INTEGER, PLUS, EOF, SPACE = 'INTEGER', 'PLUS', 'EOF', 'SPACE'
 
 
 class Token(object):
-    def __init__(self, type, value):
-        # token type: INTEGER, PLUS, or EOF
+    def __init__(self, type: Literal['INTEGER'], value: str) -> None:
         self.type = type
         # token value: 0, 1, 2. 3, 4, 5, 6, 7, 8, 9, '+', or None
         self.value = value
@@ -35,7 +34,7 @@ class InterpreterParseError(Exception):
 class Interpreter(object):
     def __init__(self, text):
         # client string input, e.g. "3+5"
-        self.text = text
+        self.text = self.strip_text(text)
         # self.pos is an index into self.text
         self.pos = 0
         # current token instance
@@ -44,7 +43,7 @@ class Interpreter(object):
     def error(self):
         raise InterpreterParseError('Error parsing input')
 
-    def get_next_token(self):
+    def next_token(self):
         """Lexical analyzer (also known as scanner or tokenizer)
         This method is responsible for breaking a sentence
         apart into tokens. One token at a time.
@@ -66,17 +65,16 @@ class Interpreter(object):
         # index to point to the next character after the digit,
         # and return the INTEGER token
         if current_char.isdigit():
-            token = Token(INTEGER, int(current_char))
+            return Token(INTEGER, int(current_char))
         elif current_char == '+':
-            token = Token(PLUS, current_char)
+            return Token(PLUS, current_char)
         elif current_char == ' ':
-            # spaces have no semantic meaning in this calculator.
-            # move on to the next character
-            self.pos += 1
-            return self.get_next_token()
+            return Token(SPACE, current_char)
         else:
             self.error()
 
+    def get_next_token(self):
+        token = self.next_token()
         self.pos += 1
         return token
 
@@ -122,6 +120,17 @@ class Interpreter(object):
         # after the above call the self.current_token is set to
         # EOF token
         return left + right
+
+    @staticmethod
+    def strip_text(text):
+        """
+        strips valid empty space from expression
+        text: expression string
+        returns: expression with valid spaces removed
+        """
+        split_expr = text.split('+')
+        stripped = [ char.strip() for char in split_expr]
+        return '+'.join(stripped)
 
 def main():
     while True:

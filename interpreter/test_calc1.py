@@ -12,22 +12,28 @@ def test_multi_digits():
 def test_allows_white_space():
     # test adding multiple digits
     assert calc('10 + 20') == 30
+    assert calc(' 10+20')  == 30
+    assert calc('10+20 ')  == 30
 
-def test_syntax_error():
+
+
+bad_inputs = [
+    ('', ValueError),
+    ('1', InterpreterParseError),
+    ('1+', ValueError),
+    ('+1', ValueError),
+    ('+', ValueError),
+    ('1 0 + 3', InterpreterParseError),
+]
+
+@pytest.mark.parametrize('string,exception', bad_inputs)
+def test_syntax_error(string, exception):
     # test various syntax errors that shouldn't ever work
-    bad_strings = [
-        ['', ValueError],
-        ['1', InterpreterParseError],
-        ['1+', ValueError],
-        ['+1', ValueError],
-        ['+', ValueError]
-    ]
 
-    for string, error in  bad_strings:
-        print(f"with {string}")
-        i = Interpreter(string)
-        with pytest.raises(error):
-            i.expr()
+
+    i = Interpreter(string)
+    with pytest.raises(exception):
+        i.expr()
 
 def calc(exp):
     interpreter = Interpreter(exp)
