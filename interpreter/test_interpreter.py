@@ -9,13 +9,17 @@ def test_multi_digits():
     # test adding multiple digits
     assert calc('10+20') == 30
 
-def test_allows_white_space():
+@pytest.mark.parametrize('string,result', [
+    ('10 + 20', 30),
+    (' 10+20', 30),
+    ('10+20 ', 30),
+])
+def test_allows_white_space(string, result):
     # test adding multiple digits
-    assert calc('10 + 20') == 30
-    assert calc(' 10+20')  == 30
-    assert calc('10+20 ')  == 30
+    assert calc(string) == result
 
-
+def test_subtraction():
+    assert calc('10-1') == 9
 
 bad_inputs = [
     ('', ValueError),
