@@ -1,6 +1,6 @@
-from typing import Union
+from typing import Union, List
 
-INTEGER, PLUS, EOF, SPACE = 'INTEGER', 'PLUS', 'EOF', 'SPACE'
+INTEGER, PLUS, EOF, SPACE, INT_WRAPPER, MINUS = 'INTEGER', 'PLUS', 'EOF', 'SPACE', 'INT_WRAPPER', 'MINUS'
 
 class Token(object):
     """
@@ -24,14 +24,22 @@ class Token(object):
         return self.__str__()
 
 class OperatorToken(Token):
-    def __init__(self, left_value, right_value) -> None:
+    def __init__(self, left_value) -> None:
         self.left_value  = left_value
-        self.right_value = right_value
+
+
+    @property
+    def right_value(self):
+        return self._right_value
+
+    @right_value.setter
+    def right_value(self, right_value):
+        self._right_value = right_value
 
 class AddToken(OperatorToken):
-    def __init__(self, left_value, right_value) -> None:
+    def __init__(self, left_value) -> None:
         self.type = 'PLUS'
-        super().__init__(left_value, right_value)
+        super().__init__(left_value)
 
     @property
     def value(self):
@@ -41,16 +49,28 @@ class AddToken(OperatorToken):
         return self.left_value.value + self.right_value.value
 
 class SubtractToken(OperatorToken):
-    def __init__(self, left_value, right_value):
-        self.type = 'PLUS'
-        super().__init__(left_value, right_value)
+    def __init__(self, left_value):
+        self.type = 'MINUS'
+        super().__init__(left_value)
 
     @property
     def value(self):
         return self.left_value.value - self.right_value.value
 
-class IntWrapper(object):
-    def __init__(self, value) -> None:
+class IntToken(Token):
+    def __init__(self, value: str) -> None:
         self.value = value
+        self.type = INTEGER
+
+class IntWrapper(Token):
+    def __init__(self, tokens: List[IntToken] ) -> None:
+        self.tokens = tokens
+        self.type = INT_WRAPPER
+
+    @property
+    def value(self) -> int:
+        number_strings = [int_token.value for int_token in self.tokens]
+        return int(''.join(number_strings))
+
 
 

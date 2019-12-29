@@ -1,52 +1,105 @@
 import pytest
-from interpreter.token import AddToken, IntWrapper, SubtractToken
+from interpreter.token import AddToken, IntWrapper, SubtractToken, IntToken, INTEGER, INT_WRAPPER, MINUS
 
 
 class TestAddToken:
     def test_add_two_numbers(self):
-        left = IntWrapper(1)
-        right = IntWrapper(2)
+        left = IntWrapper([
+            IntToken('1'),
+            IntToken('0')
+        ])
+        right = IntWrapper([
+            IntToken('2'),
+            IntToken('0')
+        ])
         add = AddToken(left)
 
-        add.supply_right(right)
-        assert add.value == 3
+        add.right_value = right
+        assert add.value == 30
 
     def test_add_number_and_sum(self):
-        left = AddToken(
-            IntWrapper(1),
-            IntWrapper(2)
-        )
+        inner_add = AddToken(IntWrapper([IntToken('3')]))
 
-        right = IntWrapper(3)
+        inner_add.right_value = IntWrapper([IntToken('2')])
 
-        add = AddToken(left)
+        num = IntWrapper([IntToken('1')])
 
-        add.supply_right(right)
-        assert add.value == 6
+        outer_add = AddToken(inner_add)
+
+        outer_add.right_value = num
+        assert outer_add.value == 6
 
 class TestSubtractToken:
     def test_subtract_two_numbers(self):
-        left = IntWrapper(3)
-        right = IntWrapper(2)
+        left = IntWrapper([
+            IntToken('2'),
+            IntToken('0')
+        ])
+        right = IntWrapper([
+            IntToken('1'),
+            IntToken('1')
+        ])
         sub = SubtractToken(left)
 
-        sub.supply_right(right)
-        assert sub.value == 1
+        sub.right_value = right
+        assert sub.value == 9
 
-    def test_subtract_number_and_sum(self):
-        left = AddToken(
-            IntWrapper(2),
-            IntWrapper(3)
-        )
+    def test_subtract_number_and_difference(self):
+        left = IntWrapper([
+            IntToken('2'),
+            IntToken('0')
+        ])
+        add = SubtractToken(IntWrapper([
+            IntToken('8'),
+        ]))
 
-        right = IntWrapper(1)
+        add.right_value = IntWrapper([
+            IntToken('3'),
+        ])
 
         sub = SubtractToken(left)
-        sub.supply_right(right)
 
-        assert sub.value == 4
+        sub.right_value = add
+
+        assert sub.value == 15
+
+    def test_type(self):
+        left = IntWrapper([
+            IntToken('2'),
+            IntToken('0')
+        ])
+        right = IntWrapper([
+            IntToken('1'),
+            IntToken('1')
+        ])
+        sub = SubtractToken(left)
+
+        sub.right_value = right
+
+        assert sub.type == MINUS
 
 class TestIntWrapper:
-    def test_returns_wrapped_value(self):
-        num = IntWrapper(2)
-        assert num.value == 2
+    def test_value(self):
+        num = IntWrapper([
+            IntToken('1'),
+            IntToken('0')
+        ])
+        assert num.value == 10
+
+    def test_type(self):
+        num = IntWrapper([
+            IntToken('1'),
+            IntToken('0')
+        ])
+
+        assert num.type == INT_WRAPPER
+
+class TestIntToken:
+
+    def test_value(self):
+        t = IntToken('3')
+        assert t.value == '3'
+
+    def test_type(self):
+        t = IntToken('3')
+        assert t.type == INTEGER
