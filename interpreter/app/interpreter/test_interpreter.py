@@ -1,5 +1,7 @@
 import pytest
-from interpreter.calc1 import Interpreter, InterpreterParseError
+from .interpreter import *
+
+# import pdb; pdb.set_trace()
 
 def test_single_digit():
     # test digit plus digit

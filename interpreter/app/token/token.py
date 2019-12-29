@@ -27,7 +27,6 @@ class OperatorToken(Token):
     def __init__(self, left_value) -> None:
         self.left_value  = left_value
 
-
     @property
     def right_value(self):
         return self._right_value
@@ -72,5 +71,7 @@ class IntWrapper(Token):
         number_strings = [int_token.value for int_token in self.tokens]
         return int(''.join(number_strings))
 
-
-
+class EOFToken(Token):
+    def __init__(self):
+        self.type = EOF
+        self.value = None

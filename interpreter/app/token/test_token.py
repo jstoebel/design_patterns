@@ -1,6 +1,5 @@
 import pytest
-from interpreter.token import AddToken, IntWrapper, SubtractToken, IntToken, INTEGER, INT_WRAPPER, MINUS
-
+from .token import *
 
 class TestAddToken:
     def test_add_two_numbers(self):
@@ -103,3 +102,15 @@ class TestIntToken:
     def test_type(self):
         t = IntToken('3')
         assert t.type == INTEGER
+
+class TestEOFToken:
+
+    @staticmethod
+    def token():
+        return EOFToken()
+
+    def test_value(self):
+        assert self.token().value == None
+
+    def test_type(self):
+        assert self.token().type == EOF
