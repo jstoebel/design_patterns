@@ -11,22 +11,30 @@ class TestAddToken:
             IntToken('2'),
             IntToken('0')
         ])
-        add = AddToken(left)
+        add = AddToken()
 
+        add.left_value = left
         add.right_value = right
         assert add.value == 30
 
     def test_add_number_and_sum(self):
-        inner_add = AddToken(IntWrapper([IntToken('3')]))
+        inner_add = AddToken()
+        inner_add.left_value = IntWrapper([IntToken('3')])
 
         inner_add.right_value = IntWrapper([IntToken('2')])
 
         num = IntWrapper([IntToken('1')])
 
-        outer_add = AddToken(inner_add)
+        outer_add = AddToken()
 
+        outer_add.left_value = inner_add
         outer_add.right_value = num
+
         assert outer_add.value == 6
+
+    def test_type(self):
+        add = AddToken()
+        assert add.type == PLUS
 
 class TestSubtractToken:
     def test_subtract_two_numbers(self):
@@ -38,7 +46,8 @@ class TestSubtractToken:
             IntToken('1'),
             IntToken('1')
         ])
-        sub = SubtractToken(left)
+        sub = SubtractToken()
+        sub.left_value = left
 
         sub.right_value = right
         assert sub.value == 9
@@ -48,33 +57,26 @@ class TestSubtractToken:
             IntToken('2'),
             IntToken('0')
         ])
-        add = SubtractToken(IntWrapper([
-            IntToken('8'),
-        ]))
+        sub1 = SubtractToken()
 
-        add.right_value = IntWrapper([
+        sub1.left_value = IntWrapper([
+            IntToken('8'),
+        ])
+
+        sub1.right_value = IntWrapper([
             IntToken('3'),
         ])
 
-        sub = SubtractToken(left)
+        sub2 = SubtractToken()
 
-        sub.right_value = add
+        sub2.left_value = left
 
-        assert sub.value == 15
+        sub2.right_value = sub1
+
+        assert sub2.value == 15
 
     def test_type(self):
-        left = IntWrapper([
-            IntToken('2'),
-            IntToken('0')
-        ])
-        right = IntWrapper([
-            IntToken('1'),
-            IntToken('1')
-        ])
-        sub = SubtractToken(left)
-
-        sub.right_value = right
-
+        sub = SubtractToken()
         assert sub.type == MINUS
 
 class TestIntWrapper:

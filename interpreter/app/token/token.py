@@ -24,9 +24,10 @@ class Token(object):
         return self.__str__()
 
 class OperatorToken(Token):
-    def __init__(self, left_value) -> None:
-        self.left_value  = left_value
-        self._right_value = None
+    def __init__(self) -> None:
+        __slots__ = 'left_value', 'right_value'
+        self.left_value = None
+        self.right_value = None
 
     def __str__(self):
         """String representation of the class instance.
@@ -37,21 +38,13 @@ class OperatorToken(Token):
         return 'Token({type}, {left}, {right})'.format(
             type=self.type,
             left=self.left_value,
-            right=self._right_value
+            right=self.right_value
         )
 
-    @property
-    def right_value(self):
-        return self._right_value
-
-    @right_value.setter
-    def right_value(self, right_value):
-        self._right_value = right_value
-
 class AddToken(OperatorToken):
-    def __init__(self, left_value) -> None:
+    def __init__(self) -> None:
         self.type = 'PLUS'
-        super().__init__(left_value)
+        super().__init__()
 
     @property
     def value(self):
@@ -61,9 +54,9 @@ class AddToken(OperatorToken):
         return self.left_value.value + self.right_value.value
 
 class SubtractToken(OperatorToken):
-    def __init__(self, left_value):
+    def __init__(self):
         self.type = 'MINUS'
-        super().__init__(left_value)
+        super().__init__()
 
     @property
     def value(self):
