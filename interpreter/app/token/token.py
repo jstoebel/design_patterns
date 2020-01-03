@@ -26,6 +26,19 @@ class Token(object):
 class OperatorToken(Token):
     def __init__(self, left_value) -> None:
         self.left_value  = left_value
+        self._right_value = None
+
+    def __str__(self):
+        """String representation of the class instance.
+        Examples:
+            Token(INTEGER, 3)
+            Token(PLUS '+')
+        """
+        return 'Token({type}, {left}, {right})'.format(
+            type=self.type,
+            left=self.left_value,
+            right=self._right_value
+        )
 
     @property
     def right_value(self):
@@ -57,11 +70,17 @@ class SubtractToken(OperatorToken):
         return self.left_value.value - self.right_value.value
 
 class IntToken(Token):
+    """
+    represents a single numeric character. Example '3'
+    """
     def __init__(self, value: str) -> None:
         self.value = value
         self.type = INTEGER
 
 class IntWrapper(Token):
+    """
+    a list of string of IntTokens that represent an integer.
+    """
     def __init__(self, tokens: List[IntToken] ) -> None:
         self.tokens = tokens
         self.type = INT_WRAPPER
