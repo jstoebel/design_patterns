@@ -24,7 +24,7 @@ def test_subtraction():
     assert calc('10-1') == 9
 
 bad_inputs = [
-    ('', ValueError),
+    ('', InterpreterParseError),
     ('1', InterpreterParseError),
     ('1+', ValueError),
     ('+1', ValueError),

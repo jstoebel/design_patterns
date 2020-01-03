@@ -43,9 +43,9 @@ class Interpreter(object):
         if current_char.isdigit():
             return token.IntToken(current_char)
         elif current_char == '+':
-            return token.AddToken(self.prev_token)
+            return token.AddToken()
         elif current_char == '-':
-            return token.SubtractToken(self.prev_token)
+            return token.SubtractToken()
         else:
             self.error()
 
@@ -95,6 +95,8 @@ class Interpreter(object):
 
         # we expect the current token to be a single-digit integer
         right = self.eat_integers()
+
+        operator.left_value = left
         operator.right_value = right
         # after the above call the self.current_token is set to
         # EOF token
