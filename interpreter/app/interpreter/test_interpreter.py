@@ -15,6 +15,10 @@ def test_multi_digits():
     ('10 + 20', 30),
     (' 10+20', 30),
     ('10+20 ', 30),
+
+    ('20 - 10', 10),
+    (' 20-10', 10),
+    ('20-10 ', 10)
 ])
 def test_allows_white_space(string, result):
     # test adding multiple digits
@@ -26,20 +30,24 @@ def test_subtraction():
 bad_inputs = [
     ('', InterpreterParseError),
     ('1', InterpreterParseError),
+
     ('1+', ValueError),
     ('+1', ValueError),
     ('+', ValueError),
     ('1 0 + 3', InterpreterParseError),
+
+    ('1-', ValueError),
+    ('-1', ValueError),
+    ('-', ValueError),
+    ('1 0 - 3', InterpreterParseError),
 ]
 
 @pytest.mark.parametrize('string,exception', bad_inputs)
 def test_syntax_error(string, exception):
     # test various syntax errors that shouldn't ever work
 
-
-    i = Interpreter(string)
     with pytest.raises(exception):
-        i.expr()
+        calc(string)
 
 def calc(exp):
     interpreter = Interpreter(exp)

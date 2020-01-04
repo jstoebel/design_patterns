@@ -1,3 +1,4 @@
+import re
 import app.token as token
 from typing import List
 
@@ -14,8 +15,8 @@ class Interpreter(object):
         self.current_token = None
         self.prev_token = None
 
-    def error(self):
-        raise InterpreterParseError('Error parsing input')
+    def error(self, msg='Error parsing input'):
+        raise InterpreterParseError(msg)
 
     def next_token(self):
         """Lexical analyzer (also known as scanner or tokenizer)
@@ -102,13 +103,18 @@ class Interpreter(object):
         # EOF token
         return operator.value
 
-    @staticmethod
-    def strip_text(text):
+    def strip_text(self, text):
         """
         strips valid empty space from expression
         text: expression string
         returns: expression with valid spaces removed
         """
-        split_expr = text.split('+')
+
+        try:
+            operator = re.search(r'[\+-]', text).group(0)
+        except(AttributeError):
+            raise self.error('expression does not contain an operator')
+
+        split_expr = text.split(operator)
         stripped = [ char.strip() for char in split_expr]
-        return '+'.join(stripped)
+        return operator.join(stripped)
