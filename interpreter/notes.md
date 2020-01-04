@@ -143,7 +143,7 @@ Next is the concept of an entire number, which is composed of one or many digits
 ```py
 class IntWrapper(Token):
     """
-    a list of string of IntTokens that represent an integer.
+    a list of IntTokens that represent an integer.
     """
     def __init__(self, tokens: List[IntToken] ) -> None:
         self.tokens = tokens
@@ -164,7 +164,7 @@ class EOFToken(Token):
         self.value = None
 ```
 
-The update to `expr` in Interpreter looks like
+The update to `expr` in Interpreter looks like this
 
 ```py
 def expr(self):
@@ -187,4 +187,25 @@ def expr(self):
     return operator.value
 ```
 
-This architecture opens the door for constructing a more complex abstract syntax tree, with any number of operators.
+Finally, I need to update my `strip_text` method to allow subtraction
+
+```py
+def strip_text(self, text):
+    """
+    strips valid empty space from expression
+    text: expression string
+    returns: expression with valid spaces removed
+    """
+
+    try:
+        operator = re.search(r'[\+-]', text).group(0) # find the operator, either a + or -
+    except(AttributeError):
+        raise self.error('expression does not contain an operator') # this error means neither operator was found. Throw our custom exception
+
+    split_expr = text.split(operator)
+    stripped = [ char.strip() for char in split_expr]
+    return operator.join(stripped)
+```
+
+
+This architecture opens the door for constructing a more complex abstract syntax tree, with any number of binary operators.
