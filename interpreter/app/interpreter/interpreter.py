@@ -47,6 +47,10 @@ class Interpreter(object):
             return token.AddToken()
         elif current_char == '-':
             return token.SubtractToken()
+        elif current_char == '*':
+            return token.MultiplyToken()
+        elif current_char == '/':
+            return token.DivideToken()
         else:
             self.error()
 
@@ -92,7 +96,7 @@ class Interpreter(object):
 
         # we expect the current token to be a '+' or '-' token
         operator = self.current_token
-        self.eat(token.PLUS, token.MINUS)
+        self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
 
         # we expect the current token to be a single-digit integer
         right = self.eat_integers()
@@ -111,7 +115,7 @@ class Interpreter(object):
         """
 
         try:
-            operator = re.search(r'[\+-]', text).group(0)
+            operator = re.search(r'[\+-\.\*\/]', text).group(0)
         except(AttributeError):
             raise self.error('expression does not contain an operator')
 

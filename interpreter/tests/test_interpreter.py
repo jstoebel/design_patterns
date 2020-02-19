@@ -27,6 +27,12 @@ def test_allows_white_space(string, result):
 def test_subtraction():
     assert calc('10-1') == 9
 
+def test_multiplication():
+    assert calc('5*2') == 10
+
+def test_division():
+    assert calc('10/2') == 5
+
 bad_inputs = [
     ('', InterpreterParseError),
     ('1', InterpreterParseError),

@@ -1,6 +1,6 @@
 from typing import Union, List
 
-INTEGER, PLUS, EOF, SPACE, INT_WRAPPER, MINUS = 'INTEGER', 'PLUS', 'EOF', 'SPACE', 'INT_WRAPPER', 'MINUS'
+INTEGER, PLUS, EOF, SPACE, INT_WRAPPER, MINUS, MULTIPLY, DIVIDE = 'INTEGER', 'PLUS', 'EOF', 'SPACE', 'INT_WRAPPER', 'MINUS', 'MULTIPLY', 'DIVIDE'
 
 class Token(object):
     """
@@ -61,6 +61,24 @@ class SubtractToken(OperatorToken):
     @property
     def value(self):
         return self.left_value.value - self.right_value.value
+
+class MultiplyToken(OperatorToken):
+    def __init__(self):
+        self.type = 'MULTIPLY'
+        super().__init__()
+
+    @property
+    def value(self):
+        return self.left_value.value * self.right_value.value
+
+class DivideToken(OperatorToken):
+    def __init__(self):
+        self.type = 'DIVIDE'
+        super().__init__()
+
+    @property
+    def value(self):
+        return self.left_value.value / self.right_value.value
 
 class IntToken(Token):
     """
