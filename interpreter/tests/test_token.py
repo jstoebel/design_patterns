@@ -1,16 +1,11 @@
 import pytest
-from .token import *
+from app.token import *
 
 class TestAddToken:
     def test_add_two_numbers(self):
-        left = IntWrapper([
-            IntToken('1'),
-            IntToken('0')
-        ])
-        right = IntWrapper([
-            IntToken('2'),
-            IntToken('0')
-        ])
+        left = int_wrapper_factory('10')
+        right = int_wrapper_factory('20')
+
         add = AddToken()
 
         add.left_value = left
@@ -19,11 +14,11 @@ class TestAddToken:
 
     def test_add_number_and_sum(self):
         inner_add = AddToken()
-        inner_add.left_value = IntWrapper([IntToken('3')])
+        inner_add.left_value = int_wrapper_factory('3')
 
-        inner_add.right_value = IntWrapper([IntToken('2')])
+        inner_add.right_value = int_wrapper_factory('2')
 
-        num = IntWrapper([IntToken('1')])
+        num = int_wrapper_factory('1')
 
         outer_add = AddToken()
 
@@ -38,14 +33,10 @@ class TestAddToken:
 
 class TestSubtractToken:
     def test_subtract_two_numbers(self):
-        left = IntWrapper([
-            IntToken('2'),
-            IntToken('0')
-        ])
-        right = IntWrapper([
-            IntToken('1'),
-            IntToken('1')
-        ])
+        left = int_wrapper_factory('20')
+
+        right = int_wrapper_factory('11')
+
         sub = SubtractToken()
         sub.left_value = left
 
@@ -53,19 +44,13 @@ class TestSubtractToken:
         assert sub.value == 9
 
     def test_subtract_number_and_difference(self):
-        left = IntWrapper([
-            IntToken('2'),
-            IntToken('0')
-        ])
+        left = int_wrapper_factory('20')
+
         sub1 = SubtractToken()
 
-        sub1.left_value = IntWrapper([
-            IntToken('8'),
-        ])
+        sub1.left_value = int_wrapper_factory('8')
 
-        sub1.right_value = IntWrapper([
-            IntToken('3'),
-        ])
+        sub1.right_value = int_wrapper_factory('3')
 
         sub2 = SubtractToken()
 
@@ -81,17 +66,12 @@ class TestSubtractToken:
 
 class TestIntWrapper:
     def test_value(self):
-        num = IntWrapper([
-            IntToken('1'),
-            IntToken('0')
-        ])
+        num = int_wrapper_factory('10')
+
         assert num.value == 10
 
     def test_type(self):
-        num = IntWrapper([
-            IntToken('1'),
-            IntToken('0')
-        ])
+        num = int_wrapper_factory('10')
 
         assert num.type == INT_WRAPPER
 

@@ -1,5 +1,5 @@
 import pytest
-from .interpreter import *
+from app.interpreter import *
 
 # import pdb; pdb.set_trace()
 
