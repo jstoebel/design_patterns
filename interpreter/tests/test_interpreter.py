@@ -1,8 +1,6 @@
 import pytest
 from app.interpreter import *
 
-# import pdb; pdb.set_trace()
-
 def test_single_digit():
     # test digit plus digit
     assert calc('1+2') == 3
@@ -40,14 +38,14 @@ bad_inputs = [
     ('', InterpreterParseError),
     ('1', InterpreterParseError),
 
-    ('1+', ValueError),
-    ('+1', ValueError),
-    ('+', ValueError),
+    ('1+', IndexError),
+    ('+1', AttributeError),
+    ('+', AttributeError),
     ('1 0 + 3', InterpreterParseError),
 
-    ('1-', ValueError),
-    ('-1', ValueError),
-    ('-', ValueError),
+    ('1-', IndexError),
+    ('-1', AttributeError),
+    ('-', AttributeError),
     ('1 0 - 3', InterpreterParseError),
 ]
 

@@ -23,6 +23,11 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
+class SpaceToken(object):
+    def __init__(self) -> None:
+        self.type = SPACE
+        self.value = None
+
 class OperatorToken(Token):
     def __init__(self) -> None:
         __slots__ = 'left_value', 'right_value'

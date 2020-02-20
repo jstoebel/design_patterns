@@ -11,20 +11,24 @@ class Interpreter(object):
         # client string input, e.g. "3+5"
         self.text = self.strip_text(text)
         # self.pos is an index into self.text
-        self.pos = 0
+        self.pos = -1
         # current token instance
         self.current_token = None
+        self.advance_token()
         self.prev_token = None
 
     def error(self, msg='Error parsing input'):
         raise InterpreterParseError(msg)
 
-    def next_token(self):
+
+    def get_token(self, offset = 0):
         """Lexical analyzer (also known as scanner or tokenizer)
         This method is responsible for breaking a sentence
         apart into tokens. One token at a time.
 
         Gets the next token but doesn't update state.
+
+        offset: a number representing the the number of characters to offset self.pos.
         """
         text = self.text
 
@@ -36,12 +40,13 @@ class Interpreter(object):
 
         # get a character at the position self.pos and decide
         # what token to create based on the single character
-        current_char = text[self.pos]
+        current_char = text[self.pos + offset]
 
         # if the character is a digit then convert it to
         # integer, create an INTEGER token, increment self.pos
         # index to point to the next character after the digit,
         # and return the INTEGER token
+
         if current_char.isdigit():
             return token.IntToken(current_char)
         elif current_char == '+':
@@ -52,13 +57,24 @@ class Interpreter(object):
             return token.MultiplyToken()
         elif current_char == '/':
             return token.DivideToken()
+        elif current_char == ' ':
+            return token.SpaceToken()
         else:
             self.error()
 
-    def get_next_token(self):
-        token = self.next_token()
+    def advance_token(self):
+        """
+        advances to the next character in the text
+        updates state for
+            - pos
+            - prev_tokenc
+            - current_token
+        """
+
         self.pos += 1
-        return token
+        next_token = self.get_token()
+        self.prev_token = self.current_token
+        self.current_token = next_token
 
     def done(self):
         return isinstance(self.current_token, token.EOFToken)
@@ -72,15 +88,14 @@ class Interpreter(object):
         """
 
         if self.current_token.type in token_types:
-            self.prev_token = self.current_token
-            self.current_token = self.get_next_token()
+            self.advance_token()
         else:
             self.error()
 
     def eat_integers(self) -> token.IntWrapper:
         """
         eats integers tokens until a non integer is found. 
-        Return 
+        Returns IntWrapper
         """
         tokens = []
         while True:
@@ -90,38 +105,33 @@ class Interpreter(object):
                 self.eat(token.INTEGER)
                 tokens.append(curr_token)
             except InterpreterParseError as e:
+                # the token isn't an integer. If its a space and the next character is an integer too, that's a corner case we need to account for
+                next_token = self.get_token(1)
+                if curr_token.type == 'SPACE' and next_token.type == 'INTEGER':
+                    self.error('illegal space detected')
                 return token.IntWrapper(tokens)
+    
+    def eat_operator(self) -> token.OperatorToken:
+        """
+        eats the next character expecting it to be an operator
+        """
+        self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
+        return self.prev_token
 
     def expr(self):
         """expr -> INTEGER PLUS INTEGER"""
-        # set current token to the first token taken from the input
-        # self.current_token = self.get_next_token()
-
-        # left = self.eat_integers()
-
-        # # we expect the current token to be a '+' or '-' token
-        # operator = self.current_token
-        # self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
-
-        # # we expect the current token to be a single-digit integer
-        # right = self.eat_integers()
-
-        # operator.left_value = left
-        # operator.right_value = right
-        # # after the above call the self.current_token is set to
-        # # EOF token
-        # return operator.value
-
-        self.current_token = self.get_next_token()
         ast = AST()
 
         while not self.done():
-            ast.feed(self.eat_integers())
-            operator = self.current_token
-            self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
-            ast.feed(operator)
-            ast.feed(self.eat_integers())
-        
+            if isinstance(self.current_token, token.OperatorToken):
+                ast.feed(self.eat_operator())
+            else:
+                ast.feed(self.eat_integers())
+
+        # number, operator, number, operator...number
+
+            # at this point, current token should be EOF
+
         return ast.value
 
     def strip_text(self, text):
@@ -132,7 +142,7 @@ class Interpreter(object):
         """
 
         try:
-            operator = re.search(r'[\+-\.\*\/]', text).group(0)
+            operator = re.search(r'[\+\-\*\/]', text).group(0)
         except(AttributeError):
             raise self.error('expression does not contain an operator')
 

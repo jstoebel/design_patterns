@@ -58,7 +58,6 @@ class AST(object):
                             2<--+
 
         """
-        # import pdb; pdb.set_trace()
         number_to_replace = self.current_operator.right_value
         token.feed(number_to_replace)
         self.current_operator.feed(token)
