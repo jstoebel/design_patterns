@@ -6,6 +6,7 @@ __all__ = [
     'INT_WRAPPER', 'IntWrapper',
     'PLUS', 'AddToken',
     'MINUS', 'SubtractToken',
+    'MULTIPLY', 'MultiplyToken',
     'EOF', 'EOFToken',
     'int_wrapper_factory'
 ]
