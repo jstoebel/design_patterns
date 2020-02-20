@@ -41,6 +41,16 @@ class OperatorToken(Token):
             right=self.right_value
         )
 
+    def feed(self, token):
+        """
+        Feed a token to this operator. Add token to left_value if its blank.
+        If not, add to right_value.
+        """
+        if self.left_value is None:
+            self.left_value = token
+        else:
+            self.right_value = token
+
 class AddToken(OperatorToken):
     def __init__(self) -> None:
         self.type = 'PLUS'
