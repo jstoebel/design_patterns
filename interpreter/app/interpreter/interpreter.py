@@ -114,11 +114,10 @@ class Interpreter(object):
         """
         eats the next character expecting it to be an operator
         """
-        self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
+        self.eat(*token.TOKENS)
         return self.prev_token
 
     def expr(self):
-        """expr -> INTEGER PLUS INTEGER"""
         ast = AST()
 
         while not self.done():
@@ -130,19 +129,3 @@ class Interpreter(object):
                 ast.feed(self.eat_integers())
 
         return ast.value
-
-    def strip_text(self, text):
-        """
-        strips valid empty space from expression
-        text: expression string
-        returns: expression with valid spaces removed
-        """
-
-        try:
-            operator = re.search(r'[\+\-\*\/]', text).group(0)
-        except(AttributeError):
-            raise self.error('expression does not contain an operator')
-
-        split_expr = text.split(operator)
-        stripped = [ char.strip() for char in split_expr]
-        return operator.join(stripped)

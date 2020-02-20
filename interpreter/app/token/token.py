@@ -2,6 +2,8 @@ from typing import Union, List
 
 INTEGER, PLUS, EOF, SPACE, INT_WRAPPER, MINUS, MULTIPLY, DIVIDE = 'INTEGER', 'PLUS', 'EOF', 'SPACE', 'INT_WRAPPER', 'MINUS', 'MULTIPLY', 'DIVIDE'
 
+TOKENS = [PLUS, MINUS, MULTIPLY, DIVIDE]
+
 class Token(object):
     """
     an abstract class representing all tokens
