@@ -1,6 +1,9 @@
 import pytest
 from app.interpreter import *
 
+def test_lone_digit():
+    assert calc('1') == 1
+
 def test_single_digit():
     # test digit plus digit
     assert calc('1+2') == 3
@@ -34,16 +37,20 @@ def test_division():
 def test_arbitrary_add_or_subtract():
     assert calc('3+5-2') == 6
 
-bad_inputs = [
-    ('', InterpreterParseError),
-    ('1', InterpreterParseError),
+def test_empty_string():
+    assert calc('') == None
 
-    ('1+', IndexError),
+def test_white_space_only():
+    assert calc('   ') == None
+
+bad_inputs = [
+
+    ('1+', AttributeError),
     ('+1', AttributeError),
     ('+', AttributeError),
     ('1 0 + 3', InterpreterParseError),
 
-    ('1-', IndexError),
+    ('1-', AttributeError),
     ('-1', AttributeError),
     ('-', AttributeError),
     ('1 0 - 3', InterpreterParseError),

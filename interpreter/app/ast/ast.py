@@ -20,6 +20,7 @@ class ASTRoot(object):
 
     @property
     def value(self):
+        if self.child is None: return None
         return self.child.value
 
 

@@ -9,7 +9,7 @@ class InterpreterParseError(Exception):
 class Interpreter(object):
     def __init__(self, text):
         # client string input, e.g. "3+5"
-        self.text = self.strip_text(text)
+        self.text = text
         # self.pos is an index into self.text
         self.pos = -1
         # current token instance
@@ -21,7 +21,7 @@ class Interpreter(object):
         raise InterpreterParseError(msg)
 
 
-    def get_token(self, offset = 0):
+    def get_token(self, offset=0):
         """Lexical analyzer (also known as scanner or tokenizer)
         This method is responsible for breaking a sentence
         apart into tokens. One token at a time.
@@ -46,21 +46,21 @@ class Interpreter(object):
         # integer, create an INTEGER token, increment self.pos
         # index to point to the next character after the digit,
         # and return the INTEGER token
-
-        if current_char.isdigit():
-            return token.IntToken(current_char)
-        elif current_char == '+':
-            return token.AddToken()
-        elif current_char == '-':
-            return token.SubtractToken()
-        elif current_char == '*':
-            return token.MultiplyToken()
-        elif current_char == '/':
-            return token.DivideToken()
-        elif current_char == ' ':
-            return token.SpaceToken()
-        else:
+        
+        try:
+            return token.token_factory(current_char)
+        except token.IllegalTokenError:
             self.error()
+
+    def next_non_space(self) -> str:
+        """
+        return the next non white space character
+        """
+        remaining_text_stripped = self.text[self.pos:].replace(' ', '')
+        if len(remaining_text_stripped):
+            return token.token_factory(remaining_text_stripped[0])
+        else:
+            return token.EOFToken()
 
     def advance_token(self):
         """
@@ -106,8 +106,7 @@ class Interpreter(object):
                 tokens.append(curr_token)
             except InterpreterParseError as e:
                 # the token isn't an integer. If its a space and the next character is an integer too, that's a corner case we need to account for
-                next_token = self.get_token(1)
-                if curr_token.type == 'SPACE' and next_token.type == 'INTEGER':
+                if curr_token.type == token.SPACE and self.next_non_space().type == token.INTEGER:
                     self.error('illegal space detected')
                 return token.IntWrapper(tokens)
     
@@ -125,12 +124,10 @@ class Interpreter(object):
         while not self.done():
             if isinstance(self.current_token, token.OperatorToken):
                 ast.feed(self.eat_operator())
+            elif isinstance(self.current_token, token.SpaceToken):
+                self.advance_token()
             else:
                 ast.feed(self.eat_integers())
-
-        # number, operator, number, operator...number
-
-            # at this point, current token should be EOF
 
         return ast.value
 

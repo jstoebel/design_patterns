@@ -10,5 +10,7 @@ __all__ = [
     'MULTIPLY', 'MultiplyToken',
     'DIVIDE', 'DivideToken',
     'EOF', 'EOFToken',
-    'int_wrapper_factory'
+    'IllegalTokenError',
+    'token_factory',
+    'int_wrapper_factory',
 ]
