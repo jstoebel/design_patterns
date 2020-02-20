@@ -1,5 +1,6 @@
 import re
 import app.token as token
+from app.ast import AST
 from typing import List
 
 class InterpreterParseError(Exception):
@@ -59,6 +60,9 @@ class Interpreter(object):
         self.pos += 1
         return token
 
+    def done(self):
+        return isinstance(self.current_token, token.EOFToken)
+
     def eat(self, *token_types):
         """
         compare the current token type with the passed token
@@ -66,6 +70,7 @@ class Interpreter(object):
         and assign the next token to the self.current_token, and the current token to self.prev_token
         otherwise raise an exception.
         """
+
         if self.current_token.type in token_types:
             self.prev_token = self.current_token
             self.current_token = self.get_next_token()
@@ -90,22 +95,34 @@ class Interpreter(object):
     def expr(self):
         """expr -> INTEGER PLUS INTEGER"""
         # set current token to the first token taken from the input
+        # self.current_token = self.get_next_token()
+
+        # left = self.eat_integers()
+
+        # # we expect the current token to be a '+' or '-' token
+        # operator = self.current_token
+        # self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
+
+        # # we expect the current token to be a single-digit integer
+        # right = self.eat_integers()
+
+        # operator.left_value = left
+        # operator.right_value = right
+        # # after the above call the self.current_token is set to
+        # # EOF token
+        # return operator.value
+
         self.current_token = self.get_next_token()
+        ast = AST()
 
-        left = self.eat_integers()
-
-        # we expect the current token to be a '+' or '-' token
-        operator = self.current_token
-        self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
-
-        # we expect the current token to be a single-digit integer
-        right = self.eat_integers()
-
-        operator.left_value = left
-        operator.right_value = right
-        # after the above call the self.current_token is set to
-        # EOF token
-        return operator.value
+        while not self.done():
+            ast.feed(self.eat_integers())
+            operator = self.current_token
+            self.eat(token.PLUS, token.MINUS, token.MULTIPLY, token.DIVIDE)
+            ast.feed(operator)
+            ast.feed(self.eat_integers())
+        
+        return ast.value
 
     def strip_text(self, text):
         """

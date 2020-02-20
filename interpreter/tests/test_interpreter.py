@@ -33,6 +33,9 @@ def test_multiplication():
 def test_division():
     assert calc('10/2') == 5
 
+def test_arbitrary_add_or_subtract():
+    assert calc('3+5-2') == 6
+
 bad_inputs = [
     ('', InterpreterParseError),
     ('1', InterpreterParseError),
