@@ -77,7 +77,7 @@ class Interpreter(object):
         self.current_token = next_token
 
     def done(self):
-        return isinstance(self.current_token, token.EOFToken)
+        return self.current_token.is_a(token.EOF)
 
     def eat(self, *token_types):
         """
@@ -121,9 +121,9 @@ class Interpreter(object):
         ast = AST()
 
         while not self.done():
-            if isinstance(self.current_token, token.OperatorToken):
+            if self.current_token.is_operator():
                 ast.feed(self.eat_operator())
-            elif isinstance(self.current_token, token.SpaceToken):
+            elif self.current_token.is_a(token.SPACE):
                 self.advance_token()
             else:
                 ast.feed(self.eat_integers())

@@ -30,7 +30,7 @@ class AST(object):
         self.current_operator = self.root
 
     def feed(self, token):
-        if isinstance(token, OperatorToken):
+        if token.is_operator():
             self._feed_operator(token)
         else:
             self._feed_number(token)

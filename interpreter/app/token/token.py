@@ -25,7 +25,19 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
-class SpaceToken(object):
+    def is_a(self, type: str) -> bool:
+        """
+        Returns if token is of the same type as `type`
+        Example:
+            token.is_a('INTEGER')
+        """
+
+        return self.type == type
+
+    def is_operator(self) -> bool:
+        return isinstance(self, OperatorToken)
+
+class SpaceToken(Token):
     def __init__(self) -> None:
         self.type = SPACE
         self.value = None
