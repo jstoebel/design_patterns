@@ -25,14 +25,14 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
-    def is_a(self, type: str) -> bool:
+    def is_a(self, *args) -> bool:
         """
         Returns if token is of the same type as `type`
         Example:
             token.is_a('INTEGER')
         """
+        return any([self.type == type for type in args])
 
-        return self.type == type
 
     def is_operator(self) -> bool:
         return False

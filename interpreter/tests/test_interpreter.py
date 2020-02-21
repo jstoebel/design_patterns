@@ -44,10 +44,18 @@ def test_arbitrary_add_or_subtract(string, result):
 
 @pytest.mark.parametrize('string,result', [
     ('7 * 4 / 2 * 3', 42),
+    ('10 * 4  * 2 * 3 / 8', 30)
 ])
 def test_arbitrary_multiply_or_divide(string, result):
     assert calc(string) == result
 
+@pytest.mark.parametrize('string,result', [
+    ('2 + 7 * 4', 30),
+    ('7 - 8 / 4', 5),
+    ('14 + 2 * 3 - 6 / 2', 17),
+])
+def test_add_subtract_multiply_and_divide(string, result):
+    assert calc(string) == result
 
 def test_empty_string():
     assert calc('') == None

@@ -1,4 +1,4 @@
-from app.token import OperatorToken
+from app.token import OperatorToken, PLUS, MINUS, MULTIPLY, DIVIDE
 
 class NullRoot(object):
     def __init__(self):
@@ -14,6 +14,7 @@ class NullRoot(object):
 class AST(object):
     def __init__(self):
         self.root = NullRoot()
+        self.current_node = self.root
 
     def feed(self, token):
         if token.is_operator():
@@ -43,8 +44,19 @@ class AST(object):
             7<--+-->3
 
         """
-        operator.feed(self.root)
-        self.root = operator
+
+        if operator.is_a(MULTIPLY, DIVIDE):
+            # we need to start at root and follow the right path until we are able to place this token below all plus and minus tokens
+
+            operator.feed(self.root)
+            self.root = operator
+            self.current_node = operator
+        else:
+            operator.feed(self.root)
+            self.root = operator
+            self.current_node = operator
+
+    
 
     def _feed_number(self, token):
         """

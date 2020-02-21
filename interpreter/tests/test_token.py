@@ -6,6 +6,10 @@ class TestToken:
         t = IntToken(5)
         assert t.is_a('INTEGER') == True
 
+    def test_is_a_multiple(self):
+        t = AddToken()
+        assert t.is_a('PLUS', 'SUBTRACT')
+
     def test_is_operator(self):
         t = IntToken(5)
         assert t.is_operator() == False
@@ -29,6 +33,29 @@ class TestOperatorToken:
         t.feed(int_wrapper_factory('7'))
         
         assert t.value == 12
+
+@pytest.mark.parametrize('operator1,operator2,result', [
+    (AddToken, AddToken, False),
+    (AddToken, SubtractToken, False),
+    (AddToken, MultiplyToken, False),
+    (AddToken, DivideToken, False),
+    (SubtractToken, AddToken, False),
+    (SubtractToken, SubtractToken, False),
+    (SubtractToken, MultiplyToken, False),
+    (SubtractToken, DivideToken, False),
+    (MultiplyToken, AddToken, True),
+    (MultiplyToken, SubtractToken, True),
+    (MultiplyToken, MultiplyToken, False),
+    (MultiplyToken, DivideToken, False),
+    (DivideToken, AddToken, True),
+    (DivideToken, SubtractToken, True),
+    (DivideToken, MultiplyToken, False),
+    (DivideToken, DivideToken, False),
+])
+class TestOperatorGreaterThan:
+
+    def test_larger_than(self, operator1, operator2, result):
+        assert operator1() > operator2() == result 
 
 class TestAddToken:
     def test_add_two_numbers(self):
