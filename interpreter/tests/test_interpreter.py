@@ -34,8 +34,13 @@ def test_multiplication():
 def test_division():
     assert calc('10/2') == 5
 
-def test_arbitrary_add_or_subtract():
-    assert calc('3+5-2') == 6
+@pytest.mark.parametrize('string,result', [
+    ('3 + 5 - 2', 6),
+    ('7 - 3 + 2 - 1', 5),
+    ('10 + 1 + 2 - 3 + 4 + 6 - 15', 5),
+])
+def test_arbitrary_add_or_subtract(string, result):
+    assert calc(string) == result
 
 def test_empty_string():
     assert calc('') == None
@@ -46,12 +51,12 @@ def test_white_space_only():
 bad_inputs = [
 
     ('1+', AttributeError),
-    ('+1', AttributeError),
+    ('+1', TypeError),
     ('+', AttributeError),
     ('1 0 + 3', InterpreterParseError),
 
     ('1-', AttributeError),
-    ('-1', AttributeError),
+    ('-1', TypeError),
     ('-', AttributeError),
     ('1 0 - 3', InterpreterParseError),
 ]
