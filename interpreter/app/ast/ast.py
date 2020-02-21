@@ -14,7 +14,7 @@ class ASTRoot(object):
     @property
     def right_value(self):
         """
-        this object doesn't really have a left_value but it needs to replicate the API of operators which do.
+        this object doesn't really have a right_value but it needs to replicate the API of operators which do.
         """
         return self.child
 

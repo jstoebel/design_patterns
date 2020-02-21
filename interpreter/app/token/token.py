@@ -35,7 +35,7 @@ class Token(object):
         return self.type == type
 
     def is_operator(self) -> bool:
-        return isinstance(self, OperatorToken)
+        return False
 
 class SpaceToken(Token):
     def __init__(self) -> None:
@@ -69,6 +69,9 @@ class OperatorToken(Token):
             self.left_value = token
         else:
             self.right_value = token
+
+    def is_operator(self) -> bool:
+        return True
 
 class AddToken(OperatorToken):
     def __init__(self) -> None:

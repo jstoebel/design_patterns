@@ -21,7 +21,7 @@ class Interpreter(object):
         raise InterpreterParseError(msg)
 
 
-    def get_token(self, offset=0):
+    def get_token(self):
         """Lexical analyzer (also known as scanner or tokenizer)
         This method is responsible for breaking a sentence
         apart into tokens. One token at a time.
@@ -40,7 +40,7 @@ class Interpreter(object):
 
         # get a character at the position self.pos and decide
         # what token to create based on the single character
-        current_char = text[self.pos + offset]
+        current_char = text[self.pos]
 
         # if the character is a digit then convert it to
         # integer, create an INTEGER token, increment self.pos
@@ -52,7 +52,7 @@ class Interpreter(object):
         except token.IllegalTokenError:
             self.error()
 
-    def next_non_space(self) -> str:
+    def next_non_space(self) -> token.Token:
         """
         return the next non white space character
         """
@@ -106,7 +106,7 @@ class Interpreter(object):
                 tokens.append(curr_token)
             except InterpreterParseError as e:
                 # the token isn't an integer. If its a space and the next character is an integer too, that's a corner case we need to account for
-                if curr_token.type == token.SPACE and self.next_non_space().type == token.INTEGER:
+                if curr_token.is_a(token.SPACE) and self.next_non_space().is_a(token.INTEGER):
                     self.error('illegal space detected')
                 return token.IntWrapper(tokens)
     
