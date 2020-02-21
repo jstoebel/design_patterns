@@ -42,6 +42,13 @@ def test_division():
 def test_arbitrary_add_or_subtract(string, result):
     assert calc(string) == result
 
+@pytest.mark.parametrize('string,result', [
+    ('7 * 4 / 2 * 3', 42),
+])
+def test_arbitrary_multiply_or_divide(string, result):
+    assert calc(string) == result
+
+
 def test_empty_string():
     assert calc('') == None
 
