@@ -27,6 +27,9 @@ class Token(object):
     def __repr__(self):
         return self.__str__()
 
+    def higher_in_tree(self, other):
+        raise NotImplementedError
+
     def is_a(self, *args) -> bool:
         """
         Returns if token is of the same type as `type`
@@ -90,6 +93,10 @@ class AddToken(OperatorToken):
         self.type = 'PLUS'
         super().__init__()
 
+    def higher_in_tree(self, other):
+        if other.is_a('PLUS', 'MINUS'): return False
+        return True
+
     @property
     def value(self):
         """
@@ -101,6 +108,10 @@ class SubtractToken(OperatorToken):
     def __init__(self):
         self.type = 'MINUS'
         super().__init__()
+
+    def higher_in_tree(self, other):
+        if other.is_a('PLUS', 'MINUS'): return False
+        return True
 
     @property
     def value(self):
@@ -115,6 +126,10 @@ class MultiplyToken(OperatorToken):
     def value(self):
         return self.left_value.value * self.right_value.value
 
+    def higher_in_tree(self, other):
+        if other.is_a('INT_WRAPPER'): return True
+        return False
+
 class DivideToken(OperatorToken):
     def __init__(self):
         self.type = 'DIVIDE'
@@ -124,6 +139,9 @@ class DivideToken(OperatorToken):
     def value(self):
         return self.left_value.value / self.right_value.value
 
+    def higher_in_tree(self, other):
+        if other.is_a('INT_WRAPPER'): return True
+        return False
 class IntToken(Token):
     """
     represents a single numeric character. Example '3'
@@ -144,6 +162,9 @@ class IntWrapper(Token):
     def value(self) -> int:
         number_strings = [int_token.value for int_token in self.tokens]
         return int(''.join(number_strings))
+
+    def higher_in_tree(self, other):
+        return False
 
 class EOFToken(Token):
     def __init__(self):

@@ -101,6 +101,16 @@ class TestAddToken:
         add = AddToken()
         assert add.type == 'PLUS'
 
+    @pytest.mark.parametrize('other,result', [
+        (AddToken(), False),
+        (SubtractToken(), False),
+        (MultiplyToken(), True),
+        (DivideToken(), True),
+        (int_wrapper_factory('5'), True),
+    ])
+    def test_higher_in_tree(self, other, result):
+        t = AddToken()
+        assert t.higher_in_tree(other) == result
 class TestSubtractToken:
     def test_subtract_two_numbers(self):
         left = int_wrapper_factory('20')
@@ -134,6 +144,17 @@ class TestSubtractToken:
         sub = SubtractToken()
         assert sub.type == 'MINUS'
 
+    @pytest.mark.parametrize('other,result', [
+        (AddToken(), False),
+        (SubtractToken(), False),
+        (MultiplyToken(), True),
+        (DivideToken(), True),
+        (int_wrapper_factory('5'), True),
+    ])
+    def test_higher_in_tree(self, other, result):
+        t = SubtractToken()
+        assert t.higher_in_tree(other) == result
+
 class TestMultiplyToken:
     def test_multiply_two_numbers(self):
         left = int_wrapper_factory('3')
@@ -149,6 +170,17 @@ class TestMultiplyToken:
     def test_type(self):
         sub = MultiplyToken()
         assert sub.type == 'MULTIPLY'
+
+    @pytest.mark.parametrize('other,result', [
+        (AddToken(), False),
+        (SubtractToken(), False),
+        (MultiplyToken(), False),
+        (DivideToken(), False),
+        (int_wrapper_factory('5'), True),
+    ])
+    def test_higher_in_tree(self, other, result):
+        t = MultiplyToken()
+        assert t.higher_in_tree(other) == result
 
 class TestDivideToken:
     def test_multiply_two_numbers(self):
@@ -176,6 +208,17 @@ class TestIntWrapper:
         num = int_wrapper_factory('10')
 
         assert num.type == 'INT_WRAPPER'
+
+    @pytest.mark.parametrize('other,result', [
+        (AddToken(), False),
+        (SubtractToken(), False),
+        (MultiplyToken(), False),
+        (DivideToken(), False),
+        (int_wrapper_factory('5'), False),
+    ])
+    def test_higher_in_tree(self, other, result):
+        t = int_wrapper_factory('5')
+        assert t.higher_in_tree(other) == result
 
 class TestIntToken:
 
