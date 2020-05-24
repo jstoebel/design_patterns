@@ -1,4 +1,6 @@
 import pytest
+
+from app.exceptions import FullOperatorError
 from app.token import *
 
 class TestToken:
@@ -30,32 +32,44 @@ class TestOperatorToken:
         t = AddToken()
         t.feed(int_wrapper_factory('5'))
         t.feed(int_wrapper_factory('3'))
-        t.feed(int_wrapper_factory('7'))
         
-        assert t.value == 12
+        with pytest.raises(FullOperatorError):
+            t.feed(int_wrapper_factory('7'))
 
-@pytest.mark.parametrize('operator1,operator2,result', [
-    (AddToken, AddToken, False),
-    (AddToken, SubtractToken, False),
-    (AddToken, MultiplyToken, False),
-    (AddToken, DivideToken, False),
-    (SubtractToken, AddToken, False),
-    (SubtractToken, SubtractToken, False),
-    (SubtractToken, MultiplyToken, False),
-    (SubtractToken, DivideToken, False),
-    (MultiplyToken, AddToken, True),
-    (MultiplyToken, SubtractToken, True),
-    (MultiplyToken, MultiplyToken, False),
-    (MultiplyToken, DivideToken, False),
-    (DivideToken, AddToken, True),
-    (DivideToken, SubtractToken, True),
-    (DivideToken, MultiplyToken, False),
-    (DivideToken, DivideToken, False),
-])
-class TestOperatorGreaterThan:
+    def test_bump(self):
+        add_t = AddToken()
+        add_t.feed(int_wrapper_factory('2'))
+        seven = int_wrapper_factory('7')
+        add_t.feed(seven)
 
-    def test_larger_than(self, operator1, operator2, result):
-        assert operator1() > operator2() == result 
+        multiply_t = MultiplyToken()
+
+        add_t.bump(multiply_t)
+        assert add_t.right_value == multiply_t
+        assert multiply_t.left_value == seven
+
+# @pytest.mark.parametrize('operator1,operator2,result', [
+#     (AddToken, AddToken, False),
+#     (AddToken, SubtractToken, False),
+#     (AddToken, MultiplyToken, False),
+#     (AddToken, DivideToken, False),
+#     (SubtractToken, AddToken, False),
+#     (SubtractToken, SubtractToken, False),
+#     (SubtractToken, MultiplyToken, False),
+#     (SubtractToken, DivideToken, False),
+#     (MultiplyToken, AddToken, True),
+#     (MultiplyToken, SubtractToken, True),
+#     (MultiplyToken, MultiplyToken, False),
+#     (MultiplyToken, DivideToken, False),
+#     (DivideToken, AddToken, True),
+#     (DivideToken, SubtractToken, True),
+#     (DivideToken, MultiplyToken, False),
+#     (DivideToken, DivideToken, False),
+# ])
+# class TestOperatorGreaterThan:
+
+#     def test_larger_than(self, operator1, operator2, result):
+#         assert operator1() > operator2() == result 
 
 class TestAddToken:
     def test_add_two_numbers(self):

@@ -1,0 +1,2 @@
+class FullOperatorError(Exception):
+    pass

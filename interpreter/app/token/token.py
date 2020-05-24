@@ -1,5 +1,7 @@
 from typing import Union, List
 
+from app.exceptions import FullOperatorError
+
 INTEGER, PLUS, EOF, SPACE, INT_WRAPPER, MINUS, MULTIPLY, DIVIDE = 'INTEGER', 'PLUS', 'EOF', 'SPACE', 'INT_WRAPPER', 'MINUS', 'MULTIPLY', 'DIVIDE'
 
 TOKENS = [PLUS, MINUS, MULTIPLY, DIVIDE]
@@ -67,11 +69,21 @@ class OperatorToken(Token):
         """
         if self.left_value is None:
             self.left_value = token
-        else:
+        elif self.right_value is None:
             self.right_value = token
+        else:
+            raise FullOperatorError('Tried to feed a value to a full operator')
 
     def is_operator(self) -> bool:
         return True
+
+    def bump(self, token):
+        """
+        operator replaces right_value with token. Token operator's previous right_value
+        """
+        bumped = self.right_value
+        self.right_value = token
+        token.feed(bumped)
 
 class AddToken(OperatorToken):
     def __init__(self) -> None:
